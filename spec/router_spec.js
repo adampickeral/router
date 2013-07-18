@@ -9,7 +9,9 @@ describe('Router', function () {
       }
     };
     defaultRoute = jasmine.createSpy('defaultRoute');
+    
     otherRoute = jasmine.createSpy('otherRoute');
+    
     router = new Router(globals);
     router.addRoute('routeDefault', defaultRoute, true);
     router.addRoute('otherRoute', otherRoute);
@@ -46,6 +48,30 @@ describe('Router', function () {
       router.route();
 
       expect(otherRoute).toHaveBeenCalled();
+    });
+
+    it('invokes the callback with the scope of the callback if no scope is specified', function () {
+      globals.location.hash = '#otherRoute';
+
+      spyOn(otherRoute, 'apply');
+
+      router.route();
+
+      expect(otherRoute.apply).toHaveBeenCalledWith(otherRoute);
+    });
+
+    it('invokes the callback with the provided scope if one is given', function () {
+      var otherScope;
+
+      otherScope = { scope: 'other scope' };
+      router.addRoute('otherRoute', otherRoute, false, otherScope);
+      spyOn(otherRoute, 'apply');
+
+      globals.location.hash = '#otherRoute';
+
+      router.route();
+
+      expect(otherRoute.apply).toHaveBeenCalledWith(otherScope);
     });
   });
 
