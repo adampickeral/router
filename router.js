@@ -8,24 +8,29 @@ Router.prototype.init = function () {
   this.route();
 };
 
-Router.prototype.addRoute = function (route, callback, defaultRoute) {
-  this.routes_[route] = callback;
+Router.prototype.addRoute = function (route, callback, defaultRoute, optionalScope) {
+  var scope;
+
+  scope = optionalScope || callback;
+  this.routes_[route] = { cback: callback, context: scope };
   if (defaultRoute) {
-    this.routes_['_default'] = callback;
+    this.routes_['_default'] = { cback: callback, context: scope };
   }
 };
 
 Router.prototype.route = function () {
-  var hash, routeCallback;
+  var hash, routeCallback, scope;
 
   hash = this.getLocationHash_();
-  routeCallback = this.routes_[hash];
-  if (routeCallback) {
-    routeCallback.apply();
-  } else {
-    routeCallback = this.routes_['_default'];
-    routeCallback.apply();
+  route = this.routes_[hash];
+
+  if (!route) {
+    route = this.routes_['_default'];
   }
+
+  routeCallback = route.cback;
+  scope = route.context;
+  routeCallback.apply(scope);
 };
 
 Router.prototype.getLocationHash_ = function () {
