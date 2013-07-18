@@ -11,7 +11,7 @@ Router.prototype.init = function () {
 Router.prototype.addRoute = function (route, callback, defaultRoute, optionalScope) {
   var scope;
 
-  scope = optionalScope || callback;
+  scope = optionalScope || this;
   this.routes_[route] = { cback: callback, context: scope };
   if (defaultRoute) {
     this.routes_['_default'] = { cback: callback, context: scope };
