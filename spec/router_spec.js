@@ -50,14 +50,14 @@ describe('Router', function () {
       expect(otherRoute).toHaveBeenCalled();
     });
 
-    it('invokes the callback with the scope of the callback if no scope is specified', function () {
+    it('invokes the callback with the scope of the router if no scope is specified', function () {
       globals.location.hash = '#otherRoute';
 
       spyOn(otherRoute, 'apply');
 
       router.route();
 
-      expect(otherRoute.apply).toHaveBeenCalledWith(otherRoute);
+      expect(otherRoute.apply).toHaveBeenCalledWith(router);
     });
 
     it('invokes the callback with the provided scope if one is given', function () {
